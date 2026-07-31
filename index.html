@@ -322,6 +322,42 @@
         }
         .close-btn:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(255, 255, 255, 0.5); }
 
+        /* --- TOMBOL MUSIK MELAYANG --- */
+        .music-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--glass-bg);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            color: var(--star-gold);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            cursor: pointer;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .music-btn:hover {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 15px rgba(253, 224, 71, 0.5);
+        }
+        
+        .music-btn.playing i { 
+            animation: spinMusic 3s linear infinite; 
+            text-shadow: 0 0 10px var(--star-gold);
+        }
+
+        @keyframes spinMusic { 100% { transform: rotate(360deg); } }
+
         @keyframes pulseGlow {
             0% { transform: scale(1); filter: drop-shadow(0 0 5px var(--star-gold)); }
             100% { transform: scale(1.1); filter: drop-shadow(0 0 15px var(--star-gold)); }
@@ -330,6 +366,16 @@
     </style>
 </head>
 <body>
+
+    <!-- Audio Player -->
+    <audio id="bg-music" loop>
+        <source src="music.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Tombol Musik -->
+    <button id="music-toggle" class="music-btn" aria-label="Toggle Music">
+        <i class="fa-solid fa-music"></i>
+    </button>
 
     <!-- Latar Belakang Cahaya Kosmik -->
     <div class="orb orb-1"></div>
@@ -446,6 +492,25 @@
             
             starsContainer.appendChild(star);
         }
+
+        // Music Logic
+        const musicBtn = document.getElementById('music-toggle');
+        const bgMusic = document.getElementById('bg-music');
+        const musicIcon = musicBtn.querySelector('i');
+
+        musicBtn.addEventListener('click', () => {
+            if (bgMusic.paused) {
+                bgMusic.play().catch(e => console.log("Autoplay dicegah browser"));
+                musicBtn.classList.add('playing');
+                musicIcon.classList.remove('fa-music');
+                musicIcon.classList.add('fa-pause');
+            } else {
+                bgMusic.pause();
+                musicBtn.classList.remove('playing');
+                musicIcon.classList.remove('fa-pause');
+                musicIcon.classList.add('fa-music');
+            }
+        });
     </script>
 </body>
 </html>
